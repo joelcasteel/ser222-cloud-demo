@@ -1,0 +1,19 @@
+div{
+    text-align: center;
+}
+
+table {
+    margin: 0 auto;
+    text-align: left;
+    border-collapse: collapse;
+    border: 1px solid #000000;
+
+}
+
+td {
+    padding: 5px 10px;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+

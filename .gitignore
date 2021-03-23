@@ -1,0 +1,4 @@
+
+.vscode
+**/node_modules
+/merge-app/build
