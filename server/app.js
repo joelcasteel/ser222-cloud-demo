@@ -9,7 +9,7 @@ app.use(express.static(path.join(__dirname, '../merge-app/build')));
  */
 app.get('/', (req, res) => {
     try {
-        res.sendFile(path.join(__dirname, '../root-client/build/index.html'));
+        res.sendFile(path.join(__dirname, './build/index.html'));
     } catch(error) {
         console.log(error);
 
