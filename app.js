@@ -3,13 +3,13 @@ var express = require('express');
 var app = express();
 var path = require('path');
 
-app.use(express.static(path.join(__dirname, '../merge-app/build')));
+app.use(express.static(path.join(__dirname, './merge-app/build')));
 
 /**
  */
 app.get('/', (req, res) => {
     try {
-        res.sendFile(path.join(__dirname, './build/index.html'));
+        res.sendFile(path.join(__dirname, './merge-app/build/index.html'));
     } catch(error) {
         console.log(error);
 
