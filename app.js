@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
     
 });
 
-var port = process.env.port || 3000
+var port = process.env.port || 3000;
 app.listen(port, () => {
     console.log(`Merge Sort Demo running at: http://localhost:${port}`);
 });
