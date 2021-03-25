@@ -105,6 +105,24 @@ class App extends Component {
     }
   }
 
+  split = function(arr) {
+    let result = [];
+
+    let half = Math.ceil(arr.length/2);
+        
+        let first = arr.splice(0, half);
+        if(first.length > 0) {
+          result.push(first);
+        }
+
+        let second = arr.splice(-half);
+        if(second.length > 0) {
+          result.push(second);
+        }
+
+        return result;
+  }
+
   insertLoc = function(val, arr) {
     arr.splice(this.findInsertLoc(val, arr)+1, 0, val);
     return arr;
