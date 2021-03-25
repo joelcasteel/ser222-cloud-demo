@@ -11,7 +11,8 @@ class App extends Component {
 
     splitValues: [],
     splitting: false,
-    merging: false
+    merging: false,
+    history: []
   };
 
   onValueChanged = event => {
@@ -34,6 +35,10 @@ class App extends Component {
   }
 
   onNextStep = event => {
+    console.log(this.splitData());
+    this.state.history.push(this.splitData());
+
+
     if(this.state.splitting) {
       let splitValues = this.state.splitValues;
       let newSplit = [];
@@ -175,6 +180,12 @@ class App extends Component {
     );
   }
 
+  history = () => {
+    return this.state.history.map((tab, i) => (
+      <React.Fragment><br/>{tab}<br/></React.Fragment>
+    ))
+  }
+
   render() {
     return (
       <div>
@@ -189,6 +200,9 @@ class App extends Component {
           {this.controlField()}
         </div>
         <br/>
+        <div>
+          {this.history()}
+        </div>
         <div>
           {this.splitData()}
         </div>
