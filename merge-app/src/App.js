@@ -3,6 +3,94 @@ import React, {Component} from 'react';
 import "./App.css";
 
 
+class BST {
+  constructor(val) {
+    this.root= null;
+    this.value = val;
+    this.left = null;
+    this.right = null;
+
+    console.log(this.value);
+  }
+
+  split = function() {
+
+    console.log(this.value);
+    if(this.value) {
+      let half = Math.ceil(this.value.length/2);
+        
+        let first = this.value.splice(0, half);
+        if(first.length > 0) {
+          this.left = new BST(first);
+          this.left.root = this;
+        }
+
+        let second = this.value.splice(-half);
+        if(second.length > 0) {
+          this.right = new BST(second);
+          this.right.root = this;
+        }
+        this.value = null;
+    } else {
+      if(this.left) {
+        this.left.split();
+      }
+      if(this.right) {
+        this.right.split();
+      }
+    }
+    console.log(this);
+  }
+
+  merge = function() {
+    if(this.left !== null) {
+      if(this.left.left === null) {
+        this.combine();
+      } else {
+        this.left.merge();
+
+        if(this.right !== null) {
+          this.right.merge();
+        }
+      }
+    }
+  }
+
+  combine = function() {
+    if(this.left !== null && this.right !== null) {
+      for(let i in this.left.value) {
+        this.insertLoc(this.left.value[i], this.right.value);
+      }
+      this.value = this.right.value;
+      this.left = null;
+      this.right = null;
+    } else if(this.left !== null) {
+      this.value = this.left.value;
+      this.left = null;
+    } else if(this.right !== null) {
+      this.value = this.right.value;
+      this.right = null;
+    }
+  }
+
+  insertLoc = function(val, arr) {
+    arr.splice(this.findInsertLoc(val, arr)+1, 0, val);
+    return arr;
+
+  }
+
+  findInsertLoc = function(val, arr) {
+    for(let i = 0; i < arr.length; i++) {
+      if(parseInt(arr[i]) > parseInt(val)) {
+        return i - 1;
+      }
+    }
+    return arr.length
+    
+  };
+
+}
+
 class App extends Component {
 
   state = {
@@ -12,7 +100,8 @@ class App extends Component {
     splitValues: [],
     splitting: false,
     merging: false,
-    history: []
+    history: [],
+    tree: null,
   };
 
   onValueChanged = event => {
@@ -26,17 +115,21 @@ class App extends Component {
   }
 
   onValueSubmit = event => {
+    let vals = this.state.values.slice();
+
+
     this.setState({
       submitted: true,
       splitValues: [this.state.values],
       splitting: true,
-      merging: false
+      merging: false,
+      tree: new BST(vals)
     });
   }
 
   onNextStep = event => {
     console.log(this.splitData());
-    this.state.history.push(this.splitData());
+    this.state.history.push(this.treeData());
 
 
     if(this.state.splitting) {
@@ -62,13 +155,16 @@ class App extends Component {
         }
 
       });
-
+      console.log("SPlitting")
+      this.state.tree.split();
       this.setState({
         splitValues: newSplit,
         splitting: !done,
         merging: done,
       });
     } else {
+
+      this.state.tree.merge();
 
       //Thanks to Vbyec's answer:
       //  https://stackoverflow.com/questions/31352141/how-do-you-split-an-array-into-array-pairs-in-javascript
@@ -105,22 +201,39 @@ class App extends Component {
     }
   }
 
-  split = function(arr) {
-    let result = [];
+  split = function(node) {
 
-    let half = Math.ceil(arr.length/2);
+    let newNode = new BST(null);
+    if(node.value === null) {
+      if(node.left !== null) {
+        this.split(node.left);
+      }
+      if(node.right !== null) {
+        this.split(node.right);
+      }
+      return;
+    }
+    console.log("HEYYY");
+    console.log(node.value);
+    let half = Math.ceil(node.value.length/2);
         
-        let first = arr.splice(0, half);
+        let first = node.value.splice(0, half);
         if(first.length > 0) {
-          result.push(first);
+          console.log(first);
+          newNode.left = new BST(first);
         }
 
-        let second = arr.splice(-half);
+        let second = node.value.splice(-half);
         if(second.length > 0) {
-          result.push(second);
+          console.log(second);
+          newNode.right = new BST(second);
         }
 
-        return result;
+        node.value = null;
+
+        this.setState({
+          tree: newNode
+        });
   }
 
   insertLoc = function(val, arr) {
@@ -198,6 +311,65 @@ class App extends Component {
     );
   }
 
+  treeData = () => {
+    if(this.state.tree) {
+    return (
+      <table>
+        <tbody>
+          <tr>
+            {this.renderTree(this.state.tree)}
+          </tr>
+        </tbody>
+      </table>
+    );
+    } else {
+      return (
+        <table>
+        <tbody>
+          <tr>
+          </tr>
+        </tbody>
+      </table>
+      )
+    }
+  }
+
+  renderTree = function(node) {
+    if(node.value !== null) {
+      return(
+        <td>{this.renderLeaf(node.value)}</td>
+      )
+    } else {
+      let result = null;
+      if(node.left !== null && node.right !== null) {
+        return (
+          <React.Fragment>
+            {this.renderTree(node.left)}
+            {this.renderTree(node.right)}
+          </React.Fragment>
+        )
+      }else if(node.left !== null) {
+        return this.renderTree(node.left);
+      }else if(node.right !== null) {
+        return this.renderTree(node.right);
+      }
+    }
+  }
+
+  renderLeaf = function(value) {
+    return (
+      <table>
+        <tbody>
+          <tr>
+            {value.map((val, i) => (
+              <td>{val}</td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+    )
+  }
+
   history = () => {
     return this.state.history.map((tab, i) => (
       <React.Fragment><br/>{tab}<br/></React.Fragment>
@@ -222,7 +394,7 @@ class App extends Component {
           {this.history()}
         </div>
         <div>
-          {this.splitData()}
+          {this.treeData()}
         </div>
       </div>
     );
