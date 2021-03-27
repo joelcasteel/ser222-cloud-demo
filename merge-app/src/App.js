@@ -22,8 +22,12 @@ class App extends Component {
     return (
       <Router>
         <div>
+          <h3>SER 222 - Visual Demos</h3>
+          <Link to='/merge'>Merge Sort Demo</Link>
+          <br/>
+          <Link to='/hash'>Hash Table Demo</Link>
           <Switch>
-            <Route exact path="/" component={MergeSort}/>
+            <Route exact path="/merge" component={MergeSort}/>
             <Route exact path="/hash" component={HashTableVisual}/>
         </Switch>
         </div>
