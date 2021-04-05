@@ -7,7 +7,7 @@ app.use(express.static(path.join(__dirname, './merge-app/build')));
 
 /**
  */
-app.get('/', (req, res) => {
+app.get('/*', (req, res) => {
     try {
         res.sendFile(path.join(__dirname, './merge-app/build/index.html'));
     } catch(error) {
